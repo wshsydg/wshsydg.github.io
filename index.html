@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>镜花缘 — 镜中花影千重梦，笔下才情万卷书</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500;700&family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --jade: #6a9b8a;
+    --jade-light: #a8c9bd;
+    --jade-pale: #d4e4dc;
+    --ink: #2c3e35;
+    --ink-light: #4a6655;
+    --mist: #f5f7f4;
+    --cream: #faf8f3;
+    --paper: #f0ede5;
+    --gold: #c1a875;
+    --rose: #b07d8a;
+    --water: #8eb0b5;
+  }
+
+  html {
+    scroll-snap-type: y mandatory;
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+  }
+
+  body {
+    font-family: 'Noto Serif SC', 'Songti SC', 'SimSun', serif;
+    background: var(--cream);
+    color: var(--ink);
+    overflow-x: hidden;
+  }
+
+  .section {
+    width: 100vw;
+    min-height: 100vh;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .page {
+    width: min(85vw, calc(100vh * 4 / 3));
+    aspect-ratio: 4 / 3;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Scroll hint */
+  .scroll-hint {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: var(--jade);
+    font-size: 14px;
+    letter-spacing: 3px;
+    opacity: 0.6;
+    animation: bounce 2s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(8px); }
+  }
+
+  /* Page number */
+  .page-num {
+    position: absolute;
+    top: 20px;
+    right: 25px;
+    font-size: 13px;
+    color: var(--jade-light);
+    letter-spacing: 2px;
+    opacity: 0.6;
+  }
+
+  /* Decorative seal */
+  .seal {
+    display: inline-block;
+    border: 1.5px solid var(--rose);
+    color: var(--rose);
+    font-size: 12px;
+    padding: 3px 8px;
+    border-radius: 2px;
+    letter-spacing: 2px;
+  }
+
+  /* ========== COVER ========== */
+  #cover {
+    background:
+      radial-gradient(ellipse at 70% 30%, rgba(106,155,138,0.08), transparent 60%),
+      radial-gradient(ellipse at 30% 70%, rgba(176,125,138,0.06), transparent 60%),
+      linear-gradient(180deg, var(--cream) 0%, var(--paper) 100%);
+  }
+
+  .cover-page {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+
+  .cover-deco-top, .cover-deco-bottom {
+    flex: 0 0 auto;
+  }
+
+  .cover-line {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(180deg, transparent, var(--jade), transparent);
+    margin: 0 auto;
+  }
+
+  .cover-title {
+    font-family: 'Ma Shan Zheng', 'Noto Serif SC', serif;
+    font-size: clamp(48px, 7vw, 88px);
+    color: var(--ink);
+    letter-spacing: 16px;
+    margin: 30px 0 15px 0;
+    text-shadow: 0 2px 20px rgba(106,155,138,0.15);
+  }
+
+  .cover-subtitle {
+    font-size: clamp(14px, 1.8vw, 20px);
+    color: var(--jade);
+    letter-spacing: 6px;
+    line-height: 2;
+    margin-bottom: 25px;
+  }
+
+  .cover-author {
+    font-size: 15px;
+    color: var(--ink-light);
+    letter-spacing: 3px;
+    margin-top: 20px;
+  }
+
+  .cover-seal-box {
+    margin-top: 30px;
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+  }
+
+  /* Mirror decoration */
+  .mirror-frame {
+    position: absolute;
+    border: 1px solid var(--jade-light);
+    border-radius: 50%;
+    opacity: 0.15;
+    pointer-events: none;
+  }
+
+  .mirror-frame.lg {
+    width: 400px; height: 400px;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .mirror-frame.md {
+    width: 300px; height: 300px;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  /* ========== AUTHOR ========== */
+  #author {
+    background: linear-gradient(180deg, var(--paper) 0%, var(--cream) 100%);
+  }
+
+  .author-page {
+    flex-direction: row;
+    padding: 40px;
+  }
+
+  .author-left {
+    flex: 0 0 35%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .author-portrait {
+    width: 160px; height: 200px;
+    border: 1px solid var(--jade-light);
+    border-radius: 4px;
+    background: linear-gradient(135deg, var(--jade-pale), var(--paper));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Ma Shan Zheng', serif;
+    font-size: 56px;
+    color: var(--jade);
+    margin-bottom: 20px;
+    position: relative;
+  }
+
+  .author-portrait::after {
+    content: '';
+    position: absolute;
+    top: 8px; left: 8px; right: 8px; bottom: 8px;
+    border: 1px solid var(--jade-pale);
+    border-radius: 2px;
+    pointer-events: none;
+  }
+
+  .author-name {
+    font-size: 22px;
+    color: var(--ink);
+    letter-spacing: 4px;
+    margin-bottom: 5px;
+  }
+
+  .author-dates {
+    font-size: 13px;
+    color: var(--jade);
+    letter-spacing: 2px;
+  }
+
+  .author-right {
+    flex: 1;
+    padding-left: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .section-label {
+    font-size: 13px;
+    color: var(--jade);
+    letter-spacing: 4px;
+    margin-bottom: 10px;
+  }
+
+  .section-title {
+    font-size: 28px;
+    color: var(--ink);
+    letter-spacing: 6px;
+    margin-bottom: 25px;
+    font-weight: 500;
+    border-bottom: 1px solid var(--jade-pale);
+    padding-bottom: 12px;
+  }
+
+  .author-text {
+    font-size: 15px;
+    line-height: 2.2;
+    color: var(--ink-light);
+    text-indent: 2em;
+    margin-bottom: 12px;
+  }
+
+  /* ========== STORY ========== */
+  #story {
+    background: linear-gradient(180deg, var(--cream) 0%, var(--mist) 100%);
+  }
+
+  .story-page {
+    padding: 40px;
+    flex-direction: column;
+  }
+
+  .story-header {
+    flex: 0 0 auto;
+    margin-bottom: 20px;
+  }
+
+  .story-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .story-text {
+    font-size: 15px;
+    line-height: 2.3;
+    color: var(--ink-light);
+    text-indent: 2em;
+    margin-bottom: 14px;
+  }
+
+  .story-keywords {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    flex-wrap: wrap;
+  }
+
+  .keyword {
+    font-size: 13px;
+    color: var(--jade);
+    background: rgba(106,155,138,0.08);
+    border: 1px solid var(--jade-pale);
+    padding: 4px 14px;
+    border-radius: 20px;
+    letter-spacing: 1px;
+  }
+
+  /* ========== VIDEO ========== */
+  #video {
+    background: linear-gradient(180deg, var(--mist) 0%, var(--cream) 100%);
+  }
+
+  .video-page {
+    padding: 40px;
+    flex-direction: column;
+  }
+
+  .video-body {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .video-frame {
+    width: 100%;
+    max-height: 100%;
+    aspect-ratio: 16 / 9;
+    border: 1px solid var(--jade-pale);
+    border-radius: 6px;
+    overflow: hidden;
+    background: rgba(0,0,0,0.03);
+    box-shadow: 0 4px 24px rgba(106,155,138,0.1);
+  }
+
+  .video-frame video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .video-caption {
+    text-align: center;
+    margin-top: 15px;
+    font-size: 14px;
+    color: var(--jade);
+    letter-spacing: 3px;
+  }
+
+  /* ========== LITERARY VALUE ========== */
+  #value {
+    background: linear-gradient(180deg, var(--mist) 0%, var(--paper) 100%);
+  }
+
+  .value-page {
+    padding: 40px;
+    flex-direction: column;
+  }
+
+  .value-body {
+    flex: 1;
+    display: flex;
+    gap: 20px;
+    align-items: stretch;
+  }
+
+  .value-card {
+    flex: 1;
+    background: rgba(255,255,255,0.6);
+    border: 1px solid var(--jade-pale);
+    border-radius: 6px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    transition: all 0.3s ease;
+  }
+
+  .value-card:hover {
+    box-shadow: 0 4px 20px rgba(106,155,138,0.12);
+    transform: translateY(-3px);
+  }
+
+  .value-card-icon {
+    font-size: 28px;
+    color: var(--jade);
+    margin-bottom: 12px;
+  }
+
+  .value-card-title {
+    font-size: 16px;
+    color: var(--ink);
+    letter-spacing: 3px;
+    margin-bottom: 10px;
+    font-weight: 500;
+  }
+
+  .value-card-text {
+    font-size: 13px;
+    line-height: 2;
+    color: var(--ink-light);
+  }
+
+  .value-quote {
+    text-align: center;
+    margin-top: 18px;
+    font-size: 14px;
+    color: var(--jade);
+    letter-spacing: 2px;
+    font-style: italic;
+  }
+
+  .value-quote::before, .value-quote::after {
+    content: '—';
+    margin: 0 8px;
+    color: var(--jade-light);
+  }
+
+  /* ========== INFLUENCE ========== */
+  #influence {
+    background:
+      radial-gradient(ellipse at 80% 20%, rgba(193,168,117,0.06), transparent 50%),
+      linear-gradient(180deg, var(--paper) 0%, var(--cream) 100%);
+  }
+
+  .influence-page {
+    padding: 40px;
+    flex-direction: column;
+  }
+
+  .influence-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .influence-item {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 18px;
+    gap: 15px;
+  }
+
+  .influence-year {
+    flex: 0 0 80px;
+    text-align: right;
+    font-size: 15px;
+    color: var(--jade);
+    letter-spacing: 1px;
+    padding-top: 2px;
+    border-right: 1px solid var(--jade-pale);
+    padding-right: 15px;
+  }
+
+  .influence-content {
+    flex: 1;
+    font-size: 14px;
+    line-height: 2;
+    color: var(--ink-light);
+  }
+
+  .influence-content strong {
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .ending {
+    text-align: center;
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid var(--jade-pale);
+  }
+
+  .ending-text {
+    font-size: 14px;
+    color: var(--jade);
+    letter-spacing: 4px;
+    line-height: 2;
+  }
+
+  /* Water decoration */
+  .water-deco {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg,
+      transparent, var(--jade-light), var(--jade-pale), var(--jade-light), transparent);
+    opacity: 0.3;
+  }
+
+  /* Side dots navigation */
+  .nav-dots {
+    position: fixed;
+    right: 24px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    z-index: 100;
+  }
+
+  .nav-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--jade-pale);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+
+  .nav-dot.active {
+    background: var(--jade);
+    transform: scale(1.3);
+  }
+
+  .nav-dot::after {
+    content: attr(data-label);
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 12px;
+    color: var(--jade);
+    letter-spacing: 2px;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .nav-dot:hover::after {
+    opacity: 0.7;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .page {
+      width: 92vw;
+    }
+    .author-page {
+      flex-direction: column;
+      padding: 25px;
+    }
+    .author-right {
+      padding-left: 0;
+      padding-top: 15px;
+    }
+    .value-body {
+      flex-direction: column;
+    }
+    .cover-title {
+      letter-spacing: 8px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- Navigation dots -->
+<nav class="nav-dots">
+  <div class="nav-dot active" data-label="封面" onclick="document.getElementById('cover').scrollIntoView({behavior:'smooth'})"></div>
+  <div class="nav-dot" data-label="作者简介" onclick="document.getElementById('author').scrollIntoView({behavior:'smooth'})"></div>
+  <div class="nav-dot" data-label="故事梗概" onclick="document.getElementById('story').scrollIntoView({behavior:'smooth'})"></div>
+  <div class="nav-dot" data-label="视频赏析" onclick="document.getElementById('video').scrollIntoView({behavior:'smooth'})"></div>
+  <div class="nav-dot" data-label="文学价值" onclick="document.getElementById('value').scrollIntoView({behavior:'smooth'})"></div>
+  <div class="nav-dot" data-label="后世影响" onclick="document.getElementById('influence').scrollIntoView({behavior:'smooth'})"></div>
+</nav>
+
+<!-- ========== COVER ========== -->
+<section class="section" id="cover">
+  <div class="page cover-page">
+    <div class="mirror-frame lg"></div>
+    <div class="mirror-frame md"></div>
+
+    <div class="cover-deco-top">
+      <div class="cover-line"></div>
+    </div>
+
+    <div class="cover-title">镜花缘</div>
+    <div class="cover-subtitle">镜中花影千重梦<br>笔下才情万卷书</div>
+
+    <div class="cover-deco-bottom">
+      <div class="cover-line"></div>
+    </div>
+
+    <div class="cover-author">清 · 李汝珍 著</div>
+
+    <div class="cover-seal-box">
+      <span class="seal">神魔小说</span>
+      <span class="seal">女权先声</span>
+      <span class="seal">嘉庆佳作</span>
+    </div>
+
+    <div class="water-deco"></div>
+    <div class="scroll-hint">向下滑动</div>
+  </div>
+</section>
+
+<!-- ========== AUTHOR ========== -->
+<section class="section" id="author">
+  <div class="page author-page">
+    <span class="page-num">壹 / 六</span>
+
+    <div class="author-left">
+      <div class="author-portrait">李</div>
+      <div class="author-name">李汝珍</div>
+      <div class="author-dates">1763 — 1830</div>
+    </div>
+
+    <div class="author-right">
+      <div class="section-label">作者简介</div>
+      <h2 class="section-title">廿年心血铸镜花</h2>
+
+      <p class="author-text">李汝珍，字松石，直隶大兴（今北京大兴）人。清代小说家、音韵学家，师从凌廷堪，博学多艺，于音韵、博弈、医药、星象皆有涉猎。</p>
+
+      <p class="author-text">他一生未入仕途，长期客居海州（今江苏连云港），以教书著述为业。历时近二十载，三易其稿，完成百回长篇小说《镜花缘》，于嘉庆二十三年（1818年）付梓问世。</p>
+
+      <p class="author-text">书中以广博的博物知识与对女性命运的深切关怀，在神魔小说的外壳下寄寓了超前的社会理想，使其成为中国小说史上一部承前启后的独特之作。</p>
+    </div>
+
+    <div class="water-deco"></div>
+  </div>
+</section>
+
+<!-- ========== STORY ========== -->
+<section class="section" id="story">
+  <div class="page story-page">
+    <span class="page-num">贰 / 六</span>
+
+    <div class="story-header">
+      <div class="section-label">故事梗概</div>
+      <h2 class="section-title">百花谪凡 · 游历奇闻</h2>
+    </div>
+
+    <div class="story-body">
+      <p class="story-text">蓬莱仙山蟠桃宴上，百花仙子与嫦娥赌誓，结下因果。数百年后，武则天醉诏百花齐放，天条遂破。百花仙子与九十九位花神被贬凡尘，托生为人间百位才女。</p>
+
+      <p class="story-text">落第秀才唐敖心灰意冷，随妻兄林之洋出海远游。历经君子国、大人国、黑齿国、女儿国等三十余国，见识奇风异俗，亦照见人间百态。至女儿国，林之洋被迫梳妆缠足，以男子之苦写女子之痛。</p>
+
+      <p class="story-text">唐敖入蓬莱修道不归。其女唐小山改名唐闺臣，赴京赶考。百位才女齐聚长安，参加女科考试，琴棋书画各展其能。然繁华终散，百花归位，镜花水月终成虚幻。</p>
+
+      <div class="story-keywords">
+        <span class="keyword">赌誓谪凡</span>
+        <span class="keyword">醉诏百花</span>
+        <span class="keyword">海外奇游</span>
+        <span class="keyword">女儿国</span>
+        <span class="keyword">女科取士</span>
+        <span class="keyword">镜花水月</span>
+      </div>
+    </div>
+
+    <div class="water-deco"></div>
+  </div>
+</section>
+
+<!-- ========== VIDEO ========== -->
+<section class="section" id="video">
+  <div class="page video-page">
+    <span class="page-num">叁 / 六</span>
+
+    <div class="story-header">
+      <div class="section-label">视频赏析</div>
+      <h2 class="section-title">镜花水月 · 影中观书</h2>
+    </div>
+
+    <div class="video-body">
+      <div class="video-frame">
+        <video id="myVideo" controls preload="auto" playsinline width="100%" height="100%">
+          <source src="6a4eb929-8c33-4050-bb90-979e56e70889_edbf95ed-9c03-4386-ab58-bdf3fbb338d4_video.mp4" type="video/mp4">
+          您的浏览器不支持视频播放，请尝试用 Chrome 或 Edge 打开。
+        </video>
+      </div>
+    </div>
+
+    <div class="video-caption">镜中花影千重梦 · 笔下才情万卷书</div>
+
+    <div class="water-deco"></div>
+  </div>
+</section>
+
+<!-- ========== LITERARY VALUE ========== -->
+<section class="section" id="value">
+  <div class="page value-page">
+    <span class="page-num">肆 / 六</span>
+
+    <div class="story-header">
+      <div class="section-label">文学价值</div>
+      <h2 class="section-title">先驱之声 · 镜中映照</h2>
+    </div>
+
+    <div class="value-body">
+      <div class="value-card">
+        <div class="value-card-icon">◆</div>
+        <div class="value-card-title">女权先声</div>
+        <p class="value-card-text">中国小说史上第一部系统讨论妇女问题的长篇小说。以女科取士构想女性参政，以缠足之痛控诉身体压迫，开风气之先。</p>
+      </div>
+
+      <div class="value-card">
+        <div class="value-card-icon">◇</div>
+        <div class="value-card-title">讽刺寓言</div>
+        <p class="value-card-text">借海外列国之游，以"君子国"讽贪婪、"大人国"察善恶、"女儿国"颠倒性别秩序，以幻写真，以奇映实。</p>
+      </div>
+
+      <div class="value-card">
+        <div class="value-card-icon">◈</div>
+        <div class="value-card-title">博物百科</div>
+        <p class="value-card-text">融音韵、医学、博弈、星象、算学于叙事之中，以小说为容器，包罗清代知识图景，兼具文学与文献价值。</p>
+      </div>
+    </div>
+
+    <div class="value-quote">中国的女权宣言  ·  胡适</div>
+
+    <div class="water-deco"></div>
+  </div>
+</section>
+
+<!-- ========== INFLUENCE ========== -->
+<section class="section" id="influence">
+  <div class="page influence-page">
+    <span class="page-num">伍 / 六</span>
+
+    <div class="story-header">
+      <div class="section-label">后世研究与影响</div>
+      <h2 class="section-title">两百年回响不绝</h2>
+    </div>
+
+    <div class="influence-body">
+      <div class="influence-item">
+        <div class="influence-year">1923</div>
+        <div class="influence-content"><strong>胡适</strong>撰文《镜花缘的引论》，称其为中国"第一部主张女权的小说"，肯定其在女性教育与参政议题上的开创意义。</div>
+      </div>
+
+      <div class="influence-item">
+        <div class="influence-year">1934</div>
+        <div class="influence-content"><strong>鲁迅</strong>在《中国小说史略》中将《镜花缘》列为清代神魔小说代表，评其"论说技艺，在小说中为创格"。</div>
+      </div>
+
+      <div class="influence-item">
+        <div class="influence-year">1965</div>
+        <div class="influence-content"><strong>夏志清</strong>在《中国古典小说史论》中分析其女性理想与儒家传统的张力，指出其思想矛盾恰是文学价值所在。</div>
+      </div>
+
+      <div class="influence-item">
+        <div class="influence-year">当代</div>
+        <div class="influence-content">学界持续关注其博物学叙事、性别观念与讽喻手法，成为研究清代社会思想与女性意识启蒙的重要文本。</div>
+      </div>
+    </div>
+
+    <div class="ending">
+      <div class="ending-text">镜中之花虽不可触  ·  先声已越两百年</div>
+    </div>
+
+    <div class="water-deco"></div>
+  </div>
+</section>
+
+<script>
+  const sections = document.querySelectorAll('.section');
+  const dots = document.querySelectorAll('.nav-dot');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const index = Array.from(sections).indexOf(entry.target);
+        dots.forEach((dot, i) => {
+          dot.classList.toggle('active', i === index);
+        });
+      }
+    });
+  }, { threshold: 0.5 });
+
+  sections.forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>
